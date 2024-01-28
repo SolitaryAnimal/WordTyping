@@ -24,6 +24,7 @@ app.get('/api/voice', async (req, res) => {
 });
 
 app.use(express.static('src/web'));
+app.use(express.static('build'));
 
 app.listen(port, () => {
     console.log(`运行在 http://127.0.0.1:${port}`)
