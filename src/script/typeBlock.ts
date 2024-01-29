@@ -4,7 +4,7 @@ abstract class BaseTypeBlock {
 
 
     public constructor(parent: Element) {
-        this.#parent = parent;
+        this.#parent = createElement('div', parent, { className: "type-block" });
     }
 
 
@@ -12,7 +12,7 @@ abstract class BaseTypeBlock {
 
 
     public release() {
-        this.eleArray.forEach(w => w.remove());
+        this.#parent.remove();
     }
 
 

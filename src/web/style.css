@@ -76,7 +76,7 @@ div {
 }
 
 /* 为拼音添加空格 */
-#main-tra .pys .py:not(:last-child) {
+#main-tra .pys div:not(:last-child) {
     margin-right: 0.25em;
 }
 

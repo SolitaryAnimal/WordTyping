@@ -22,9 +22,9 @@ class Word {
         // 将拼音推送到打字区
         info.mainTra.py.forEach(p => {
             if (isAllSign(p)) {
-                this.#typings.push(new SignTypeBloc(this.#createElement('span', mainTra.pys, { className: 'py' }), p));
+                this.#typings.push(new SignTypeBloc(mainTra.pys, p));
             } else {
-                this.#typings.push(new WordTypeBlock(this.#createElement('span', mainTra.pys, { className: 'py' }), p));
+                this.#typings.push(new WordTypeBlock(mainTra.pys, p));
             }
         })
         // 创建其他翻译

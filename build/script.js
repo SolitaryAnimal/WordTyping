@@ -42,10 +42,10 @@ class BaseTypeBlock {
     constructor(parent) {
         this.eleArray = [];
         _BaseTypeBlock_parent.set(this, void 0);
-        __classPrivateFieldSet(this, _BaseTypeBlock_parent, parent, "f");
+        __classPrivateFieldSet(this, _BaseTypeBlock_parent, createElement('div', parent, { className: "type-block" }), "f");
     }
     release() {
-        this.eleArray.forEach(w => w.remove());
+        __classPrivateFieldGet(this, _BaseTypeBlock_parent, "f").remove();
     }
     createElement(text) {
         let buf = createElement('span', __classPrivateFieldGet(this, _BaseTypeBlock_parent, "f"), { textContent: text });
@@ -168,10 +168,10 @@ class Word {
         // 将拼音推送到打字区
         info.mainTra.py.forEach(p => {
             if (isAllSign(p)) {
-                __classPrivateFieldGet(this, _Word_typings, "f").push(new SignTypeBloc(__classPrivateFieldGet(this, _Word_instances, "m", _Word_createElement).call(this, 'span', mainTra.pys, { className: 'py' }), p));
+                __classPrivateFieldGet(this, _Word_typings, "f").push(new SignTypeBloc(mainTra.pys, p));
             }
             else {
-                __classPrivateFieldGet(this, _Word_typings, "f").push(new WordTypeBlock(__classPrivateFieldGet(this, _Word_instances, "m", _Word_createElement).call(this, 'span', mainTra.pys, { className: 'py' }), p));
+                __classPrivateFieldGet(this, _Word_typings, "f").push(new WordTypeBlock(mainTra.pys, p));
             }
         });
         // 创建其他翻译
