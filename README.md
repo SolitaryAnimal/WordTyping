@@ -17,11 +17,23 @@ npm run start
 
 ## 调试
 
+编译 TypeScript 需要安装前置(示例代码为全局安装)
+
+```
+npm install -g typescript
+```
+
+更新 TypeScript 代码后需要重新编译
+
+```
+tsc
+```
+
 ### 使用Visual Studio Code
 
 #### 调试后端
 
-需要安装依赖(自动重载)
+需要安装依赖(自动重载), (示例代码为全局安装)
 ```
 npm install -g nodemon
 ```
