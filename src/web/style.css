@@ -88,8 +88,22 @@ div {
     text-align: left;
 }
 
+.type-block {
+    position: relative;
+    display: inline-block;
+}
+
+.pass,
+.orgin,
+.orginMask {
+    overflow: hidden;
+    position: absolute;
+    transition: width 0.2s, left 0.2s;
+}
+
 .pass {
     color: green;
+    -webkit-text-stroke: 2px green;
 }
 
 footer {

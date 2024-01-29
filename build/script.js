@@ -37,34 +37,42 @@ function init(data) {
     });
 }
 fetch('./words.json').then(r => r.text()).then(t => init(t));
-var _BaseTypeBlock_parent, _WordTypeBlock_index, _WordTypeBlock_wordList, _SignTypeBloc_textBlock;
+var _WordTypeBlock_index, _WordTypeBlock_wordList, _WordTypeBlock_passEle, _WordTypeBlock_orginMask, _WordTypeBlock_orginEle, _WordTypeBlock_width, _SignTypeBloc_textBlock;
 class BaseTypeBlock {
     constructor(parent) {
         this.eleArray = [];
-        _BaseTypeBlock_parent.set(this, void 0);
-        __classPrivateFieldSet(this, _BaseTypeBlock_parent, createElement('div', parent, { className: "type-block" }), "f");
+        this.parent = createElement('div', parent, { className: "type-block" });
     }
     release() {
-        __classPrivateFieldGet(this, _BaseTypeBlock_parent, "f").remove();
+        this.parent.remove();
     }
-    createElement(text) {
-        let buf = createElement('span', __classPrivateFieldGet(this, _BaseTypeBlock_parent, "f"), { textContent: text });
-        this.eleArray.push(buf);
-        return buf;
+    createElement(text, parent = this.parent) {
+        return createElement('span', parent, { textContent: text });
     }
 }
-_BaseTypeBlock_parent = new WeakMap();
 // 单词打字区, 一组需要输入的连续字符
 class WordTypeBlock extends BaseTypeBlock {
     constructor(parent, word) {
         super(parent);
         _WordTypeBlock_index.set(this, 0);
         _WordTypeBlock_wordList.set(this, []);
+        _WordTypeBlock_passEle.set(this, void 0);
+        _WordTypeBlock_orginMask.set(this, void 0);
+        _WordTypeBlock_orginEle.set(this, void 0);
+        _WordTypeBlock_width.set(this, void 0);
+        __classPrivateFieldSet(this, _WordTypeBlock_orginMask, createElement('div', this.parent, { className: "orginMask" }), "f");
+        __classPrivateFieldSet(this, _WordTypeBlock_orginEle, createElement('div', __classPrivateFieldGet(this, _WordTypeBlock_orginMask, "f"), { className: "orgin" }), "f");
+        __classPrivateFieldSet(this, _WordTypeBlock_passEle, createElement('div', this.parent, { className: "pass", style: "width:0;" }), "f");
         for (let i of word) {
-            var buf = this.createElement(i);
+            var buf = this.createElement(i, __classPrivateFieldGet(this, _WordTypeBlock_orginEle, "f"));
             if (isCM(i))
                 __classPrivateFieldGet(this, _WordTypeBlock_wordList, "f").push(buf);
+            // 用于动画
+            this.createElement(i, __classPrivateFieldGet(this, _WordTypeBlock_passEle, "f"));
         }
+        __classPrivateFieldSet(this, _WordTypeBlock_width, __classPrivateFieldGet(this, _WordTypeBlock_orginEle, "f").offsetWidth, "f");
+        this.parent.setAttribute('style', `width: ${__classPrivateFieldGet(this, _WordTypeBlock_width, "f")}px; height: ${__classPrivateFieldGet(this, _WordTypeBlock_orginEle, "f").offsetHeight}px`);
+        __classPrivateFieldGet(this, _WordTypeBlock_orginMask, "f").setAttribute('style', `width: ${__classPrivateFieldGet(this, _WordTypeBlock_width, "f")}px; height: ${__classPrivateFieldGet(this, _WordTypeBlock_orginEle, "f").offsetHeight}px`);
     }
     // 初始化最开始的符号元素效果
     init() {
@@ -76,25 +84,32 @@ class WordTypeBlock extends BaseTypeBlock {
     }
     next(key) {
         var _a, _b, _c;
-        var _d, _e, _f;
+        var _d, _e;
         if ((_c = key === ((_b = (_a = __classPrivateFieldGet(this, _WordTypeBlock_wordList, "f")[__classPrivateFieldGet(this, _WordTypeBlock_index, "f")]) === null || _a === void 0 ? void 0 : _a.textContent) === null || _b === void 0 ? void 0 : _b.toLowerCase())) !== null && _c !== void 0 ? _c : false) {
             // 跳过非字母的部分
             do {
-                __classPrivateFieldGet(this, _WordTypeBlock_wordList, "f")[__classPrivateFieldSet(this, _WordTypeBlock_index, (_e = __classPrivateFieldGet(this, _WordTypeBlock_index, "f"), _d = _e++, _e), "f"), _d].className = 'pass';
+                __classPrivateFieldSet(this, _WordTypeBlock_index, (_d = __classPrivateFieldGet(this, _WordTypeBlock_index, "f"), _d++, _d), "f");
             } while (__classPrivateFieldGet(this, _WordTypeBlock_index, "f") < __classPrivateFieldGet(this, _WordTypeBlock_wordList, "f").length && !isAllWord(__classPrivateFieldGet(this, _WordTypeBlock_wordList, "f")[__classPrivateFieldGet(this, _WordTypeBlock_index, "f")].textContent));
+            // 更新显示颜色
+            let ele = __classPrivateFieldGet(this, _WordTypeBlock_wordList, "f")[__classPrivateFieldGet(this, _WordTypeBlock_index, "f") - 1];
+            __classPrivateFieldGet(this, _WordTypeBlock_passEle, "f").setAttribute('style', `width: ${ele.offsetLeft + ele.offsetWidth}px`);
+            __classPrivateFieldGet(this, _WordTypeBlock_orginMask, "f").style.width = __classPrivateFieldGet(this, _WordTypeBlock_width, "f") - ele.offsetLeft + 'px';
+            __classPrivateFieldGet(this, _WordTypeBlock_orginMask, "f").style.left = ele.offsetLeft + 'px';
+            __classPrivateFieldGet(this, _WordTypeBlock_orginEle, "f").style.left = -ele.offsetLeft + 'px';
         }
         else {
             // 输入错误的话就从头开始
-            for (; __classPrivateFieldGet(this, _WordTypeBlock_index, "f") >= 0; __classPrivateFieldSet(this, _WordTypeBlock_index, (_f = __classPrivateFieldGet(this, _WordTypeBlock_index, "f"), _f--, _f), "f")) {
+            for (; __classPrivateFieldGet(this, _WordTypeBlock_index, "f") >= 0; __classPrivateFieldSet(this, _WordTypeBlock_index, (_e = __classPrivateFieldGet(this, _WordTypeBlock_index, "f"), _e--, _e), "f")) {
                 __classPrivateFieldGet(this, _WordTypeBlock_wordList, "f")[__classPrivateFieldGet(this, _WordTypeBlock_index, "f")].removeAttribute('class');
             }
             __classPrivateFieldSet(this, _WordTypeBlock_index, 0, "f");
+            __classPrivateFieldGet(this, _WordTypeBlock_passEle, "f").setAttribute('style', 'width: 0');
         }
         // 如果输入完毕将生成下一个单词
         return __classPrivateFieldGet(this, _WordTypeBlock_index, "f") >= __classPrivateFieldGet(this, _WordTypeBlock_wordList, "f").length;
     }
 }
-_WordTypeBlock_index = new WeakMap(), _WordTypeBlock_wordList = new WeakMap();
+_WordTypeBlock_index = new WeakMap(), _WordTypeBlock_wordList = new WeakMap(), _WordTypeBlock_passEle = new WeakMap(), _WordTypeBlock_orginMask = new WeakMap(), _WordTypeBlock_orginEle = new WeakMap(), _WordTypeBlock_width = new WeakMap();
 // 符号打字区, 不需要输入
 class SignTypeBloc extends BaseTypeBlock {
     constructor(parent, word) {
