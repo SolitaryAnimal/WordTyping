@@ -19,9 +19,19 @@ npm run start
 
 ### 使用Visual Studio Code
 
+#### 调试后端
+
 需要安装依赖(自动重载)
 ```
 npm install -g nodemon
 ```
 
-直接在运行和调试中启用 `nodemon` 即可调试
+然后直接在运行和调试中启用 `调试后端(自动重载)` 即可调试
+
+#### 调试前端
+
+取消注释 `tsconfig.json` 中的 `"sourceMap": true`
+
+需要安装 Visual Studio Code 插件 [JavaScript Debugger](https://marketplace.visualstudio.com/items?itemName=ms-vscode.js-debug).
+
+然后在调试中用 `调试前端` 即可调试

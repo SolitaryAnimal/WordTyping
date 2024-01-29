@@ -40,12 +40,13 @@ class Word {
 
     public next(key) {
         let block = this.#typings[this.#index];
-        if (block instanceof WordTypeBlock) block.init();
         if (block.next(key))
             if (this.#index++ === 0) {
                 this.#enAudio.safePlay();
                 this.#enAudio.onended = () => this.#zhAudio.safePlay();
             }
+        block = this.#typings[this.#index];
+        if (block instanceof WordTypeBlock) block.init();
 
         return this.#index >= this.#typings.length;
     }
