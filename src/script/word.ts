@@ -1,6 +1,10 @@
-const wordEle = document.querySelector('.main .word');
-const mainTrasEle = document.querySelector('.main .main-tra');
-const trasEle = document.querySelector('.main .tras');
+const wordEle = document.querySelector('#word');
+const mainTra = {
+    "type": document.querySelector('#main-tra .type'),
+    "zh": document.querySelector('#main-tra .zh'),
+    "pys": document.querySelector('#main-tra .pys')
+};
+const trasEle = document.querySelector('#tras');
 
 
 class Word {
@@ -13,19 +17,21 @@ class Word {
         // 将单词推向打字区
         this.#typings.push(new WordTypeBlock(wordEle, info.word));
         // 将第一个汉译添加
-        this.#createElement('div', mainTrasEle,
-            { className: 'main-zh', textContent: info.mainTra.type + ' ' + info.mainTra.zh });
+        mainTra.type.textContent = info.mainTra.type;
+        mainTra.zh.textContent = info.mainTra.zh;
         // 将拼音推送到打字区
         info.mainTra.py.forEach(p => {
             if (isAllSign(p)) {
-                this.#typings.push(new SignTypeBloc(this.#createElement('span', mainTrasEle, { className: 'py' }), p));
+                this.#typings.push(new SignTypeBloc(this.#createElement('span', mainTra.pys, { className: 'py' }), p));
             } else {
-                this.#typings.push(new WordTypeBlock(this.#createElement('span', mainTrasEle, { className: 'py' }), p));
+                this.#typings.push(new WordTypeBlock(this.#createElement('span', mainTra.pys, { className: 'py' }), p));
             }
         })
         // 创建其他翻译
         for (let { type, tras } of info.tras) {
-            this.#createElement('div', trasEle, { textContent: type + ' ' + tras.join('; ') });
+            let tr = this.#createElement('tr', trasEle);
+            this.#createElement('td', tr, { textContent: type, className: 'type' });
+            this.#createElement('td', tr, { textContent: tras.join('; '), className: 'zh' });
         }
         // 下载语音
         this.#enAudio = enAudioGeter.getAudio(info.word);

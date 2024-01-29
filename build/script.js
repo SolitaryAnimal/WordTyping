@@ -28,8 +28,13 @@ function ready(event) {
 }
 function init(data) {
     wordList = JSON.parse(data);
-    wordEle.textContent = '按任意键开始';
-    document.addEventListener("keypress", ready);
+    // wordEle.textContent = '按任意键开始';
+    // document.addEventListener("keypress", ready);
+    createNextWord();
+    document.addEventListener("keypress", (event) => {
+        if (word.next(event.key))
+            createNextWord();
+    });
 }
 fetch('./words.json').then(r => r.text()).then(t => init(t));
 var _BaseTypeBlock_parent, _WordTypeBlock_index, _WordTypeBlock_wordList, _SignTypeBloc_textBlock;
@@ -140,9 +145,13 @@ function isAllSign(target) {
     return true;
 }
 var _Word_instances, _Word_typings, _Word_index, _Word_releaseElems, _Word_enAudio, _Word_zhAudio, _Word_createElement;
-const wordEle = document.querySelector('.main .word');
-const mainTrasEle = document.querySelector('.main .main-tra');
-const trasEle = document.querySelector('.main .tras');
+const wordEle = document.querySelector('#word');
+const mainTra = {
+    "type": document.querySelector('#main-tra .type'),
+    "zh": document.querySelector('#main-tra .zh'),
+    "pys": document.querySelector('#main-tra .pys')
+};
+const trasEle = document.querySelector('#tras');
 class Word {
     constructor(info) {
         _Word_instances.add(this);
@@ -154,19 +163,22 @@ class Word {
         // 将单词推向打字区
         __classPrivateFieldGet(this, _Word_typings, "f").push(new WordTypeBlock(wordEle, info.word));
         // 将第一个汉译添加
-        __classPrivateFieldGet(this, _Word_instances, "m", _Word_createElement).call(this, 'div', mainTrasEle, { className: 'main-zh', textContent: info.mainTra.type + ' ' + info.mainTra.zh });
+        mainTra.type.textContent = info.mainTra.type;
+        mainTra.zh.textContent = info.mainTra.zh;
         // 将拼音推送到打字区
         info.mainTra.py.forEach(p => {
             if (isAllSign(p)) {
-                __classPrivateFieldGet(this, _Word_typings, "f").push(new SignTypeBloc(__classPrivateFieldGet(this, _Word_instances, "m", _Word_createElement).call(this, 'span', mainTrasEle, { className: 'py' }), p));
+                __classPrivateFieldGet(this, _Word_typings, "f").push(new SignTypeBloc(__classPrivateFieldGet(this, _Word_instances, "m", _Word_createElement).call(this, 'span', mainTra.pys, { className: 'py' }), p));
             }
             else {
-                __classPrivateFieldGet(this, _Word_typings, "f").push(new WordTypeBlock(__classPrivateFieldGet(this, _Word_instances, "m", _Word_createElement).call(this, 'span', mainTrasEle, { className: 'py' }), p));
+                __classPrivateFieldGet(this, _Word_typings, "f").push(new WordTypeBlock(__classPrivateFieldGet(this, _Word_instances, "m", _Word_createElement).call(this, 'span', mainTra.pys, { className: 'py' }), p));
             }
         });
         // 创建其他翻译
         for (let { type, tras } of info.tras) {
-            __classPrivateFieldGet(this, _Word_instances, "m", _Word_createElement).call(this, 'div', trasEle, { textContent: type + ' ' + tras.join('; ') });
+            let tr = __classPrivateFieldGet(this, _Word_instances, "m", _Word_createElement).call(this, 'tr', trasEle);
+            __classPrivateFieldGet(this, _Word_instances, "m", _Word_createElement).call(this, 'td', tr, { textContent: type, className: 'type' });
+            __classPrivateFieldGet(this, _Word_instances, "m", _Word_createElement).call(this, 'td', tr, { textContent: tras.join('; '), className: 'zh' });
         }
         // 下载语音
         __classPrivateFieldSet(this, _Word_enAudio, enAudioGeter.getAudio(info.word), "f");

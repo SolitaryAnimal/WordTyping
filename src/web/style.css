@@ -13,58 +13,8 @@ body {
     color: var(--fontground-color);
 }
 
-div {
-    text-align: center;
-}
-
-main {
-    flex: 1;
-    position: relative;
-}
-
-.main {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -7.5rem);
-    flex-direction: column;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.main .word {
-    font-size: 5rem;
-}
-
-.main .main-tra {
-    font-size: 4rem;
-}
-
-.main .main-tra .py:not(:last-child) {
-    margin-right: 1rem;
-}
-
-header h1 {
-    display: inline-block;
-}
-
-footer {
-    justify-content: end;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
-}
-
-.pass {
-    color: green;
-}
-
 header {
-    padding: 0 1rem 0 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    margin-top: 1rem;
 }
 
 #logo {
@@ -73,16 +23,84 @@ header {
     font-size: 2rem;
 }
 
-#state-bar {
-    display: inline-block;
-    width: 20rem;
-    height: 2rem;
-    background-color: red;
-    border-radius: 0.5rem;
+main {
+    flex: 1;
+    position: relative;
 }
 
-#state-bar {
+div {
+    text-align: center;
+}
+
+#main {
+    /* 将第一行居中, 然后向上偏移一点 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -4rem);
+
+    display: grid;
+    grid-template-rows: 1fr, 1fr, 1fr;
+
+    /* padding: 0 3rem;
+    border: 2px solid white;
+    border-radius: 5rem; */
+}
+
+#word {
+    font-size: 5rem;
+}
+
+#main-tra {
+    font-size: 3.5rem;
+
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+}
+
+#main-tra .type {
+    font-size: 1em;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#main-tra .zh {
+    display: inline-block;
+}
+
+#main-tra .pys {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 为拼音添加空格 */
+#main-tra .pys .py:not(:last-child) {
+    margin-right: 0.25em;
+}
+
+#tras .type {
+    text-align: right;
+}
+
+#tras .zh {
+    text-align: left;
+}
+
+.pass {
+    color: green;
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+header {
+    padding: 0 1rem 0 1rem;
     display: flex;
     align-items: center;
-    padding: 0 1rem 0 1rem;
+    justify-content: space-between;
 }

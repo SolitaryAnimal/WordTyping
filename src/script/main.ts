@@ -22,8 +22,13 @@ function ready(event): void {
 
 function init(data: string): void {
     wordList = JSON.parse(data);
-    wordEle.textContent = '按任意键开始';
-    document.addEventListener("keypress", ready);
+    // wordEle.textContent = '按任意键开始';
+    // document.addEventListener("keypress", ready);
+    createNextWord();
+    document.addEventListener("keypress", (event) => {
+        if (word.next(event.key))
+            createNextWord();
+    });
 }
 
 
