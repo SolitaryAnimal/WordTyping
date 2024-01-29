@@ -4,21 +4,24 @@ const trasEle = document.querySelector('.main .tras');
 
 
 class Word {
-    #typings: Array<TypeArea> = [];
+    #typings: Array<BaseTypeBlock> = [];
     #index: number = 0;
     #releaseElems: Array<Element> = [];
     #enAudio: SafeHTMLAudioElement;
     #zhAudio: SafeHTMLAudioElement;
     public constructor(info) {
-        this.#typings.push(new TypeArea(wordEle, info.word));
-        // 将第一个汉译添加到打字区
+        // 将单词推向打字区
+        this.#typings.push(new WordTypeBlock(wordEle, info.word));
+        // 将第一个汉译添加
         this.#createElement('div', mainTrasEle,
             { className: 'main-zh', textContent: info.mainTra.type + ' ' + info.mainTra.zh });
-
         // 将拼音推送到打字区
         info.mainTra.py.forEach(p => {
-            // TODO: 需要跳过全部非拼音的块
-            this.#typings.push(new TypeArea(this.#createElement('span', mainTrasEle, { className: 'py' }), p));
+            if (isAllSign(p)) {
+                this.#typings.push(new SignTypeBloc(this.#createElement('span', mainTrasEle, { className: 'py' }), p));
+            } else {
+                this.#typings.push(new WordTypeBlock(this.#createElement('span', mainTrasEle, { className: 'py' }), p));
+            }
         })
         // 创建其他翻译
         for (let { type, tras } of info.tras) {
@@ -27,8 +30,6 @@ class Word {
         // 下载语音
         this.#enAudio = enAudioGeter.getAudio(info.word);
         this.#zhAudio = zhAudioGeter.getAudio(info.mainTra.zh);
-        // this.enAudio = getAudio(info.word, 'en');
-        // this.zhAudio = getAudio(info.mainTra.zh, 'zh');
     }
 
     #createElement(type, patent = undefined, atts = null) {
@@ -38,7 +39,9 @@ class Word {
     }
 
     public next(key) {
-        if (this.#typings[this.#index].next(key))
+        let block = this.#typings[this.#index];
+        if (block instanceof WordTypeBlock) block.init();
+        if (block.next(key))
             if (this.#index++ === 0) {
                 this.#enAudio.safePlay();
                 this.#enAudio.onended = () => this.#zhAudio.safePlay();
@@ -47,7 +50,7 @@ class Word {
         return this.#index >= this.#typings.length;
     }
 
-    release() {
+    public release() {
         this.#typings.forEach(t => t.release());
         this.#releaseElems.forEach(e => e.remove());
     }

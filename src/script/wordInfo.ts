@@ -1,3 +1,5 @@
+// 单词信息的接口
+
 interface TraInfo {
     "type": string;
     "tras": Array<string>;

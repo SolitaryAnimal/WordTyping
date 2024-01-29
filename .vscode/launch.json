@@ -7,15 +7,22 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "nodemon",
+            "name": "调试后端(自动重载)",
             "runtimeExecutable": "nodemon",
             "program": "${workspaceFolder}/src/server/server.js",
             "restart": true,
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "env": {
-                "debug": "app:*",
+                "debug": "app:*"
             }
+        },
+        {
+            "type": "chrome",
+            "name": "调试前端",
+            "request": "launch",
+            "url": "http://127.0.0.1:3000/",
+            "webRoot": "${workspaceFolder}/build"
         }
     ]
 }
