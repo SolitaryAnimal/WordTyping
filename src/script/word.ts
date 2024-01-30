@@ -1,8 +1,8 @@
-const wordEle = document.querySelector('#word');
+const wordEle = document.querySelector('#word') as HTMLElement;
 const mainTra = {
-    "type": document.querySelector('#main-tra .type'),
-    "zh": document.querySelector('#main-tra .zh'),
-    "pys": document.querySelector('#main-tra .pys')
+    "type": document.querySelector('#main-tra .type') as HTMLElement,
+    "zh": document.querySelector('#main-tra .zh') as HTMLElement,
+    "pys": document.querySelector('#main-tra .pys') as HTMLElement
 };
 const trasEle = document.querySelector('#tras');
 
@@ -10,7 +10,7 @@ const trasEle = document.querySelector('#tras');
 class Word {
     #typings: Array<BaseTypeBlock> = [];
     #index: number = 0;
-    #releaseElems: Array<Element> = [];
+    #releaseElems: Array<HTMLElement> = [];
     #enAudio: SafeHTMLAudioElement;
     #zhAudio: SafeHTMLAudioElement;
     public constructor(info) {

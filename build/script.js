@@ -1,13 +1,13 @@
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
 var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 // 此文件保存音频相关的来源
 var wordList = null;
@@ -37,29 +37,30 @@ function init(data) {
     });
 }
 fetch('./words.json').then(r => r.text()).then(t => init(t));
-var _BaseTypeBlock_parent, _WordTypeBlock_index, _WordTypeBlock_wordList, _SignTypeBloc_textBlock;
+var _WordTypeBlock_instances, _WordTypeBlock_index, _WordTypeBlock_wordList, _WordTypeBlock_pase, _WordTypeBlock_playErrorAnimation, _SignTypeBloc_textBlock;
 class BaseTypeBlock {
     constructor(parent) {
         this.eleArray = [];
-        _BaseTypeBlock_parent.set(this, void 0);
-        __classPrivateFieldSet(this, _BaseTypeBlock_parent, createElement('div', parent, { className: "type-block" }), "f");
+        this.parent = createElement('div', parent, { className: "type-block" });
+        this.parent.style.position = 'relative';
     }
     release() {
-        __classPrivateFieldGet(this, _BaseTypeBlock_parent, "f").remove();
+        this.parent.remove();
     }
     createElement(text) {
-        let buf = createElement('span', __classPrivateFieldGet(this, _BaseTypeBlock_parent, "f"), { textContent: text });
+        let buf = createElement('span', this.parent, { textContent: text });
         this.eleArray.push(buf);
         return buf;
     }
 }
-_BaseTypeBlock_parent = new WeakMap();
 // 单词打字区, 一组需要输入的连续字符
 class WordTypeBlock extends BaseTypeBlock {
     constructor(parent, word) {
         super(parent);
+        _WordTypeBlock_instances.add(this);
         _WordTypeBlock_index.set(this, 0);
         _WordTypeBlock_wordList.set(this, []);
+        _WordTypeBlock_pase.set(this, false);
         for (let i of word) {
             var buf = this.createElement(i);
             if (isCM(i))
@@ -77,6 +78,8 @@ class WordTypeBlock extends BaseTypeBlock {
     next(key) {
         var _a, _b, _c;
         var _d, _e, _f;
+        if (__classPrivateFieldGet(this, _WordTypeBlock_pase, "f"))
+            return false;
         if ((_c = key === ((_b = (_a = __classPrivateFieldGet(this, _WordTypeBlock_wordList, "f")[__classPrivateFieldGet(this, _WordTypeBlock_index, "f")]) === null || _a === void 0 ? void 0 : _a.textContent) === null || _b === void 0 ? void 0 : _b.toLowerCase())) !== null && _c !== void 0 ? _c : false) {
             // 跳过非字母的部分
             do {
@@ -84,17 +87,43 @@ class WordTypeBlock extends BaseTypeBlock {
             } while (__classPrivateFieldGet(this, _WordTypeBlock_index, "f") < __classPrivateFieldGet(this, _WordTypeBlock_wordList, "f").length && !isAllWord(__classPrivateFieldGet(this, _WordTypeBlock_wordList, "f")[__classPrivateFieldGet(this, _WordTypeBlock_index, "f")].textContent));
         }
         else {
+            // 播放错误动画
+            __classPrivateFieldGet(this, _WordTypeBlock_instances, "m", _WordTypeBlock_playErrorAnimation).call(this, __classPrivateFieldGet(this, _WordTypeBlock_wordList, "f")[__classPrivateFieldGet(this, _WordTypeBlock_index, "f")]);
             // 输入错误的话就从头开始
             for (; __classPrivateFieldGet(this, _WordTypeBlock_index, "f") >= 0; __classPrivateFieldSet(this, _WordTypeBlock_index, (_f = __classPrivateFieldGet(this, _WordTypeBlock_index, "f"), _f--, _f), "f")) {
                 __classPrivateFieldGet(this, _WordTypeBlock_wordList, "f")[__classPrivateFieldGet(this, _WordTypeBlock_index, "f")].removeAttribute('class');
             }
             __classPrivateFieldSet(this, _WordTypeBlock_index, 0, "f");
+            // 暂时暂停输入
+            __classPrivateFieldSet(this, _WordTypeBlock_pase, true, "f");
         }
         // 如果输入完毕将生成下一个单词
         return __classPrivateFieldGet(this, _WordTypeBlock_index, "f") >= __classPrivateFieldGet(this, _WordTypeBlock_wordList, "f").length;
     }
 }
-_WordTypeBlock_index = new WeakMap(), _WordTypeBlock_wordList = new WeakMap();
+_WordTypeBlock_index = new WeakMap(), _WordTypeBlock_wordList = new WeakMap(), _WordTypeBlock_pase = new WeakMap(), _WordTypeBlock_instances = new WeakSet(), _WordTypeBlock_playErrorAnimation = function _WordTypeBlock_playErrorAnimation(errorKey) {
+    let start = performance.now();
+    let frequency = 20;
+    let distance = 10;
+    let animationTime = 300;
+    let parent = this.parent;
+    let area = this;
+    requestAnimationFrame(function anime(time) {
+        let timeFraction = (time - start) / animationTime;
+        if (timeFraction > 1) {
+            timeFraction = 1;
+            errorKey.style.removeProperty('color');
+        }
+        else {
+            let c = timeFraction * 255;
+            errorKey.style.color = `rgb(255, ${c}, ${c})`;
+            requestAnimationFrame(anime);
+        }
+        if (__classPrivateFieldGet(area, _WordTypeBlock_pase, "f") && timeFraction > 0.8)
+            __classPrivateFieldSet(area, _WordTypeBlock_pase, false, "f");
+        parent.style.left = Math.sin(timeFraction * frequency) * distance * (1 - timeFraction) + 'px';
+    });
+};
 // 符号打字区, 不需要输入
 class SignTypeBloc extends BaseTypeBlock {
     constructor(parent, word) {
