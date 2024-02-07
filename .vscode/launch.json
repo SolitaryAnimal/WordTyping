@@ -5,24 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
-            "request": "launch",
-            "name": "调试后端(自动重载)",
-            "runtimeExecutable": "nodemon",
-            "program": "${workspaceFolder}/src/server/server.js",
-            "restart": true,
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen",
-            "env": {
-                "debug": "app:*"
-            }
-        },
-        {
             "type": "chrome",
-            "name": "调试前端",
             "request": "launch",
-            "url": "http://127.0.0.1:3000/",
-            "webRoot": "${workspaceFolder}/build"
+            "name": "针对 localhost 启动 Chrome",
+            "url": "http://localhost:5173",
+            "webRoot": "${workspaceFolder}"
         }
     ]
 }

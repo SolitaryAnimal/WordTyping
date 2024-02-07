@@ -1,12 +1,11 @@
 {
-    "compilerOptions": {
-        "outFile": "build/script.js",
-        "target": "ES2015",
-        // "strict": true
-        "sourceMap": true
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
     },
-    "include": [
-        "src/script/**/*",
-        "src/script/*"
-    ]
+    {
+      "path": "./tsconfig.app.json"
+    }
+  ]
 }
