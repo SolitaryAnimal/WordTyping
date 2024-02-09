@@ -6,5 +6,6 @@ export interface ITypeable extends ComponentPublicInstance {
 
 export interface ITypeArea extends ComponentPublicInstance {
     word: string,
-    update: (target: number) => void
+    update: (target: number) => void,
+    error: (target: number) => void
 }

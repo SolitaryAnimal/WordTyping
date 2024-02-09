@@ -3,3 +3,17 @@ export function isLowerCaseLetter(str: string) {
     let v = str.charCodeAt(0);
     return (v >= 87 && 122 >= v);
 }
+
+export function animation(targetTime: number, draw: (time: number) => void) {
+    let start = performance.now();
+    requestAnimationFrame(function animationLoop(time) {
+        let normalTime = (time - start) / targetTime;
+        if (normalTime >= 1) {
+            normalTime = 1;
+        } else {
+            requestAnimationFrame(animationLoop);
+        }
+        if (normalTime < 0) normalTime = 0;
+        draw(normalTime);
+    })
+}

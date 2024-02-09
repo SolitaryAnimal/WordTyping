@@ -37,16 +37,15 @@ function next(key: string): boolean {
     if (key === wordArray[index].textContent) {
         if (++index >= wordArray.length) {
             typeArea.value?.update(index);
-            console.log(index);
             return true;
         }
         index = skip(index);
         typeArea.value?.update(index);
-        console.log(index);
         return index >= wordArray.length;
     }
+    // 输入错误
     index = startIndex;
-    typeArea.value?.update(index);
+    typeArea.value?.error(index);
     console.log(index);
     return false;
 }
