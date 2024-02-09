@@ -3,14 +3,15 @@ import { ref, type ComponentPublicInstance, onMounted } from 'vue';
 import { animation } from '../modules/utility';
 import type { isLeftHandSideExpression, transform } from 'typescript';
 
+
+const props = defineProps<{ word: string, startIndex: number }>();
+const emit = defineEmits<{ (e: 'register', element: Element | ComponentPublicInstance | null): void }>();
+
+
 const elements: Array<Element> = [];
 const span = ref<ComponentPublicInstance | null>(null);
 const xPos = ref(0);
 let index: number = 0;
-
-
-const props = defineProps<{ word: string, startIndex: number }>();
-const emit = defineEmits<{ (e: 'register', element: Element | ComponentPublicInstance | null): void }>();
 
 
 function update(target: number): void {
